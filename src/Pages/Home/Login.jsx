@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import PasswordInput from "../../Components/PasswordInput";
+import { validateEmail } from "../../utils/helper";
 
 const Login = () => {
 
@@ -11,11 +12,18 @@ const [error, setError] = useState(null);
 
 const handleSubmit = async (e) => {
     e.preventDefault();
-    setError(null);
-    if (!email || !password) {
-      setError("Please fill in all fields");
-      return;
+       
+    if(!validateEmail(email)){
+        setError("Please enter a valid email address");
+        return;
     }
+    if(password.length < 6){
+        setError("Password must be at least 6 characters long");
+        return;
+    }
+    setError(null);
+    
+    // Login Api call here 
 }
 
   return (
@@ -23,9 +31,18 @@ const handleSubmit = async (e) => {
       <div className="bg-white w-96 p-8 rounded border shadow-md ">
         <form onSubmit={handleSubmit}>
           <h4 className="text-2xl mb-7">Login</h4>
-          <input type="text" placeholder="Email" className="input-box" value={email} onChange={(e)=> setEmail(e.target.value)} />
-          <PasswordInput value={password}  onChange={(e)=> setPassword(e.target.value)}/>
-            {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
+          <input
+            type="text"
+            placeholder="Email"
+            className="input-box"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
+          <PasswordInput
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
+          {error && <p className="text-red-600 text-[10px] mt-2">{error}</p>}
           <button type="submit" className="btn-primary">
             Login
           </button>
